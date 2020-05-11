@@ -1,8 +1,8 @@
-require_relative '../hotel_controller'
+require_relative '../models/hotel_controller'
 require 'spec_helper'
 
 RSpec.describe HotelController do 
-  hotel_controller = HotelController.new
+  hotel_controller = HotelController.new(4, 2, 2)
   it "should run accurately" do 
 
     #First Run, sub corriodor lights should be off, all other ON
