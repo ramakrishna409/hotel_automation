@@ -30,6 +30,7 @@ hotel_controller.input(params)
 
 hotel_controller.hotel.stats
 
+puts '------------------------------------------------------------------------------------------------'
 
 params = {}
 params[:motion_detected] = true
