@@ -2,9 +2,6 @@ require 'pastel'
 require 'pry'
 require 'aasm'
 class Hotel
-  AC_POWER_CONSUMPTION = 15
-  LIGHT_POWER_CONSUMPTION = 10
-
   attr_accessor :name, :floors, :main_corridors_count, :sub_corridors_count
 
   def initialize flooor_count, main_corridors_count, sub_corridors_count
@@ -12,7 +9,7 @@ class Hotel
     @main_corridors_count = main_corridors_count
     @sub_corridors_count = sub_corridors_count
     @floors = []
-    flooor_count.times{ @floors << Floor.new(main_corridors_count, sub_corridors_count)}
+    flooor_count.times{ @floors << Floor.new(main_corridors_count, sub_corridors_count, self)}
     @pastel = Pastel.new
     swith_on_all_main_corridor_lights
     switch_on_all_the_acs
@@ -21,20 +18,19 @@ class Hotel
   def update(hotel_controller, params)
     corridor = floors[params[:floor_number]- 1].sub_corridors[params[:sub_corridor_num]- 1]
     if params[:motion_detected]
-      corridor.light.turn_on if corridor.light.off?
-      corridor.ac.turn_off if corridor.ac.on?
+      corridor.light.turn_on
     else
-      corridor.light.turn_off if corridor.light.on?
-      corridor.ac.turn_on if corridor.ac.off?
+      corridor.light.turn_off
+      corridor.ac.turn_on
     end
   end
 
   def swith_on_all_main_corridor_lights
-    floors.each{|floor| floor.main_corridors.each{|mc| mc.light.switch}}
+    floors.each{|floor| floor.main_corridors.each{|mc| mc.light.turn_on}}
   end
 
   def switch_on_all_the_acs
-    floors.each{|floor| [floor.main_corridors + floor.sub_corridors].flatten.each{|c| c.ac.switch if power_consumption <= threshold_cosumption}}
+    floors.each{|floor| [floor.main_corridors + floor.sub_corridors].flatten.each{|c| c.ac.turn_on}}
   end
 
   def stats
@@ -52,11 +48,11 @@ class Hotel
      end
    end
    puts "Total Power Consumption #{power_consumption}"
-   puts "Threshold Power Consumption #{threshold_cosumption}"
+   puts "Threshold Power Consumption #{threshold_consumption}"
   end
 
-  def threshold_cosumption
-    floors.count * ((main_corridors_count * AC_POWER_CONSUMPTION) + (sub_corridors_count * LIGHT_POWER_CONSUMPTION))
+  def threshold_consumption
+    floors.inject(0) {|sum, floor| sum += floor.threshold_consumption}
   end
 
   def power_consumption

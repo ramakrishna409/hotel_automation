@@ -1,10 +1,11 @@
-class Corriodor
-  attr_accessor :type, :light, :ac
+class Corridor
+  attr_accessor :type, :light, :ac, :floor
   
-  def initialize type
+  def initialize type, floor
     @type = type
-    @light = Light.new
+    @light = Light.new(self)
     @ac = Ac.new
+    self.floor = floor
   end
 
   def power_consumption
