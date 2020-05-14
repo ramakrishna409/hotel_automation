@@ -5,10 +5,10 @@ class Appliance
 
   aasm whiny_transitions: false do
     state :off, initial: true
-    state :on
+    state :on, before_enter: :turn_off_ac_if_necessary
     
-    event :turn_on, after_transaction: :check_power do 
-      transitions :from => :off, :to => :on, :if => [:off?, :allowed_power_consumption?]
+    event :turn_on do 
+      transitions :from => :off, :to => :on, :if => :off?
     end
 
     event :turn_off do 
@@ -16,13 +16,9 @@ class Appliance
     end
   end
 
-  def allowed_power_consumption?
+  def turn_off_ac_if_necessary
     if self.instance_of?(Light)
       self.corridor.ac.turn_off if (self.corridor.floor.power_consumption + self.class::POWER_CONSUMPTION) > self.corridor.floor.threshold_consumption
     end
-    true
   end
-
-
-  
 end 

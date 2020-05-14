@@ -16,16 +16,25 @@ puts '--------------------------------------------------------------------------
 params = {}
 params[:motion_detected] = true
 params[:floor_number] = 2
-params[:sub_corridor_num] = 2
+params[:sub_corridor_num] = 1
 hotel_controller.input(params)
 
 hotel_controller.hotel.stats
 puts '------------------------------------------------------------------------------------------------'
 
 params = {}
-params[:motion_detected] = false
+params[:motion_detected] = true
 params[:floor_number] = 2
 params[:sub_corridor_num] = 2
+hotel_controller.input(params)
+
+hotel_controller.hotel.stats
+
+
+params = {}
+params[:motion_detected] = true
+params[:floor_number] = 3
+params[:sub_corridor_num] = 1
 hotel_controller.input(params)
 
 hotel_controller.hotel.stats
